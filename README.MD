@@ -1,0 +1,1 @@
+# to build the app use npm run package, but before that install all the npms with npm install. To open the app go to dist and find .exe file.
