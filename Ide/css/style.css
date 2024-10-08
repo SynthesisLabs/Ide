@@ -1,4 +1,0 @@
-/* command to run tailwind npx tailwindcss -i ./src/input.css -o ./src/output.css --watch */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
