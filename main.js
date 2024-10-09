@@ -1,137 +1,70 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, screen } = require('electron');
 const path = require('node:path')
+const fs = require('fs')
+
+let win;
 
 function createWindow() {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true,
-        },
-        icon: path.join(__dirname, 'icon.ico'),
-    });
-    win.loadFile('index.html');
+  win = new BrowserWindow({
+    width: 1200,
+    height: 1000,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    },
+    icon: path.join(__dirname, 'icon.ico'),
+  });
+  win.loadFile('index.html');
+  win.maximize()
 }
 
+
+ipcMain.handle('dialog:openFile', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      { name: 'Text Files', extensions: ['txt', 'js', 'html', 'css'] },
+      { name: 'All Files', extensions: ['*'] }
+    ]
+  });
+
+  if (!canceled && filePaths.length > 0) {
+    const filePath = filePaths[0];
+    const fileName = path.basename(filePath); // Get only the file name
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+    // Send the file name and content to the renderer
+    win.webContents.send('file-opened', { fileName, fileContent });
+  }
+});
+
 const menuTemplate = [
-    {
-        label: 'File',
-        submenu: [
-            {
-                label: 'New File',
-                accelerator: 'CmdOrCtrl+N',
-                click: () => {
-                    console.log('New File clicked');
-                },
-            },
-            {
-                label: 'Open...',
-                submenu: [
-                    {
-                        label: "Open file",
-                        click: () => {
-                            console.log('Open file clicked');
-                        },
-                    },
-                    {
-                        label: "Open folder",
-                        click: () => {
-                            console.log('Open folder clicked');
-                        },
-                    },
-                ],
-            },
-            {
-                label: 'Save',
-                accelerator: 'CmdOrCtrl+S',
-                click: () => {
-                    console.log('Save clicked');
-                },
-            },
-            {
-                type: 'separator',
-            },
-            {
-                label: 'Exit',
-                role: 'quit',
-            },
-            {
-                label: 'Reload',
-                accelerator: 'CmdOrCtrl+R',
-                role: 'forceReload',
-            },
-        ],
-    },
-    {
-        label: 'Edit',
-        submenu: [
-            {
-                label: 'Undo',
-                accelerator: 'CmdOrCtrl+Z',
-                click: () => {
-                    console.log('Undo pressed');
-                },
-                role: 'Undo',
-            },
-            {
-                label: 'Redo',
-                accelerator: 'CmdOrCtrl+Y',
-                click: () => {
-                    console.log('Redo pressed');
-                },
-                role: 'Redo',
-            },
-            {
-                label: 'Cut',
-                accelerator: "CmdOrCtrl+X",
-                click: ()=>{
-                    console.log('cut pressed')
-                }
-            },
-            {
-                label: 'Copy',
-                accelerator: "CmdOrCtrl+V",
-                click: ()=>{
-                    console.log('coppy pressed')
-                }
-            },
-            {
-                label: 'Find',
-                accelerator: "CmdOrCtrl+F",
-                click: ()=>{
-                    console.log('Find pressed')
-                }
-            },
-            {
-                label: 'Replace',
-                accelerator: "CmdOrCtrl+H",
-                click: ()=>{
-                    console.log('Replace pressed')
-                }
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Open...',
+        click: async (item, focusedWindow) => {
+          if (focusedWindow) {
+            const { filePath, content } = await focusedWindow.webContents.executeJavaScript('ipcRenderer.invoke("dialog:openFile")');
+            if (filePath) {
+              // Send the file path and content to the renderer
+              focusedWindow.webContents.send('open-file', { filePath, content });
             }
-        ],
-    },
+          }
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Exit',
+        role: 'quit',
+      },
+    ],
+  },
+
 ];
-/* function Undo(){
-    let history = [];
-    let currentIndex = -1;
-
-    //get the textarea
-
-    // Track changes in the text area
-    textArea.addEventListener('input', (e) => {
-    history = history.slice(0, currentIndex + 1); // Remove forward history if any
-    history.push(textArea.value);
-    currentIndex++;
-    });
-
-    document.getElementById('undoButton').addEventListener('click', () => {
-    if (currentIndex > 0) {
-        currentIndex--;
-        textArea.value = history[currentIndex];
-    }
-    });
-}*/
 
 const customMenu = Menu.buildFromTemplate(menuTemplate);
 Menu.setApplicationMenu(customMenu);
@@ -139,13 +72,13 @@ Menu.setApplicationMenu(customMenu);
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
