@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cell</title>
     <link rel="stylesheet" href="css/styleo.css">
 </head>
-<body class="w-full h-full flex justify-center items-center flex-col bg-gradient-to-r from-stone-700 to-stone-600 bg-opacity-80">
+
+<body
+    class="w-full h-full flex justify-center items-center flex-col bg-gradient-to-r from-stone-700 to-stone-600 bg-opacity-80">
     <div class="flex justify-center items-center flex-col">
-        <h1 class="text-xl" >Welcome to Cell!</h1>
+        <h1 class="text-xl">Welcome to Cell!</h1>
         <p class="text-base">This is a simple IDE.</p>
     </div>
+
+    <div id="file-info"></div>
+    <textarea id="editor" style="color: black; border: none; outline: none; resize: none" cols="150" rows="20"></textarea>
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on('file-opened', (event, { fileName, fileContent }) => {
+            document.getElementById('file-info').innerText = `Editing: ${fileName}`;
+            document.getElementById('editor').value = fileContent;
+        });
+    </script>
 </body>
-</html>A
+
+</html>
