@@ -61,6 +61,11 @@ const menuTemplate = [
         label: 'Exit',
         role: 'quit',
       },
+      {
+        label: 'Reload',
+        role: "forceReload",
+        accelerator: 'CmdOrCtrl+R',
+      }
     ],
   },
 

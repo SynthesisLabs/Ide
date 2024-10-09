@@ -8,3 +8,7 @@ body{
 *{
     color: rgb(255, 255, 255);
 }
+.Icons{
+    height: 4vh;
+    max-width: 3vw;
+}
