@@ -57,17 +57,46 @@ const menuTemplate = [
       {
         type: 'separator',
       },
-      {
-        label: 'Exit',
-        role: 'quit',
-      },
+      ,
       {
         label: 'Reload',
         role: "forceReload",
         accelerator: 'CmdOrCtrl+R',
+      },
+      {
+        label: 'Exit',
+        role: 'quit',
       }
     ],
   },
+  {
+    label: 'View',
+    submenu: [
+      {
+        label: 'Zoom In',
+        accelerator: 'CmdOrCtrl+=',  // Changed to CmdOrCtrl+=
+        click: () => {
+          const currentZoom = win.webContents.getZoomLevel();
+          win.webContents.setZoomLevel(currentZoom + 1);  // Increase zoom level by 1
+        },
+      },
+      {
+        label: 'Zoom Out',
+        accelerator: 'CmdOrCtrl+-',
+        click: () => {
+          const currentZoom = win.webContents.getZoomLevel();
+          win.webContents.setZoomLevel(currentZoom - 1);  // Decrease zoom level by 1
+        },
+      },
+      {
+        label: 'Reset Zoom',
+        accelerator: 'CmdOrCtrl+0',
+        click: () => {
+          win.webContents.setZoomLevel(0);  // Reset zoom level
+        },
+      },
+    ],
+  }
 
 ];
 
