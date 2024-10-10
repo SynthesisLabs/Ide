@@ -1,14 +1,22 @@
 {
-  "name": "ide",
+  "name": "own-ide",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . my-electron-app --platform=win32 --arch=x64 --out=dist --icon=icon.ico --overwrite"
   },
-  "author": "royboot+uitgeteld",
-  "license": "ISC",
+  "description": "",
   "devDependencies": {
-    "electron": "^32.1.2"
-  }
+    "electron": "^32.1.2",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "tailwindcss": "^3.4.13"
+  },
+  "keywords": [],
+  "author": "royboot&uitgeteld",
+  "license": "ISC"
 }
