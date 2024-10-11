@@ -1,2 +1,0 @@
-# to build the app use npm run package, but before that install all the npms with npm install. To open the app go to dist and find .exe file. (for quick start npm start)
-tailwind command: npx tailwindcss -i css/style.css -o css/styleo.css --watch
