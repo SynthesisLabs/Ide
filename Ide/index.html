@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell</title>
+    <link rel="stylesheet" href="css/styleo.css">
+</head>
+
+<body class="w-[100vw] h-[100vh] flex justify-center items-center flex-col bg-gradient-to-r from-stone-700 to-stone-600 bg-opacity-80">
+    <div class="flex justify-start items-center flex-col h-[100vh] z-10" id="main-container">
+        <!-- <h1 class="text-xl">Welcome to Cell!</h1>
+        <p class="text-base">This is a simple IDE.</p> -->
+        <div class="flex flex-row relative left-0" id="Row-container">
+            <div class="flex flex-col items-start bg-stone-900  w-[3vw] h-[100vh]" id="small-side-bar">
+                <img src="icons/explorer.png" alt="explorer" class="Icons">
+                <img src="icons/search.png" alt="search" class="Icons">
+                <img src="icons/exstentions.png" alt="extentions" class="Icons">
+            </div>
+            <aside id="Explorer" class="bg-stone-800 shadow-[3px_5px_10px_3px_rgba(47, 45, 43, 0.7)]  h-[100vh] w-[16.6vw] mr-[0.4vw]">
+
+            </aside>
+            <textarea id="editor" class="text-white border-none outline-none resize-none w-[80vw] h-full ml-auto bg-gradient-to-r from-stone-500 to-stone-400 bg-opacity-80"cols="150" rows="20"></textarea>
+            <div id="file-info"></div>
+        </div>
+        
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on('file-opened', (event, { fileName, fileContent }) => {
+            // document.getElementById('file-info').innerText = `Editing: ${fileName}`;
+            document.getElementById('editor').value = fileContent;
+        });
+    </script>
+</body>
+
+</html>
