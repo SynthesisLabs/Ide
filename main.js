@@ -46,9 +46,8 @@ const menuTemplate = [
         label: 'Open...',
         click: async (item, focusedWindow) => {
           if (focusedWindow) {
-            const { filePath, content } = await focusedWindow.webContents.executeJavaScript('ipcRenderer.invoke("dialog:openFile")');
+            const { filePath, content } = focusedWindow.webContents.executeJavaScript('ipcRenderer.invoke("dialog:openFile")');
             if (filePath) {
-              // Send the file path and content to the renderer
               focusedWindow.webContents.send('open-file', { filePath, content });
             }
           }
