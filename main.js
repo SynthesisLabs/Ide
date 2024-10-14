@@ -1,9 +1,10 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain, screen } = require('electron');
 const path = require('node:path')
 const fs = require('fs')
+const os = require('os')
 
 let win;
-
+let temp = os.tmpdir();
 function createWindow() {
   win = new BrowserWindow({
     width: 1200,
@@ -20,6 +21,9 @@ function createWindow() {
 
 
 ipcMain.handle('dialog:openFile', async () => {
+    openFile();
+});
+async function openFile(){
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
     filters: [
@@ -36,7 +40,23 @@ ipcMain.handle('dialog:openFile', async () => {
     // Send the file name and content to the renderer
     win.webContents.send('file-opened', { fileName, fileContent });
   }
-});
+}
+  function newFile(){
+    const file_name = 'new_file.txt';
+    const filepath = path.join(temp,file_name)
+
+    win = new BrowserWindow({
+      width: 1200,
+      height: 1000,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      },
+      icon: path.join(__dirname, 'icon.ico'),
+    });
+    win.loadFile(file_name);
+    win.maximize()
+}
 
 const menuTemplate = [
   {
@@ -52,10 +72,23 @@ const menuTemplate = [
             }
           }
         },
+
+      },
+      {
+        label: 'New window',
+        click: ()=>{
+          createWindow()
+        }
       },
       {
         type: 'separator',
       },
+      {
+        label: 'new file',
+        click:()=>{
+
+        }
+      }
       ,
       {
         label: 'Reload',
