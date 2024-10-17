@@ -42,6 +42,7 @@ async function openFile() {
   }
 }
 function newFile() {
+  console.log("Swen is een snoepje")
   const fileName = 'new_file.txt';
   const filePath = path.join(temp, fileName)
   const fileContent = "New file";
@@ -50,20 +51,12 @@ function newFile() {
   } catch (err) {
     console.error(`Error writing file: ${err}`);
   }
-  // win.webContents.send('file-opened', { fileName, fileContent });
+  try {
+    win.webContents.send('file-opened', { fileName, fileContent });
 
-
-  win = new BrowserWindow({
-    width: 1200,
-    height: 1000,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    },
-    icon: path.join(__dirname, 'icon.ico'),
-  });
-  win.loadFile(fileName);
-  win.maximize()
+  } catch (err) {
+    console.log(`Error opening the file: ${err}`)
+  }
 }
 
 const menuTemplate = [
@@ -156,3 +149,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+module.exports = newFile;

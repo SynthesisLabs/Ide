@@ -6,9 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cell</title>
     <link rel="stylesheet" href="css/styleo.css">
+    <script src="main.js" defer></script>
 </head>
 
 <body class="w-[100vw] h-[100vh] flex justify-center items-center flex-col bg-gradient-to-r from-stone-700 to-stone-600 bg-opacity-80">
+    <script>
+        const file_list = document.getElementById("File-List");
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on('file-opened', (event, { fileName, fileContent }) => {
+            // document.getElementById('file-info').innerText = `Editing: ${fileName}`;
+            document.getElementById('editor').value = fileContent;
+        });
+    </script>
     <div class="flex justify-start items-center flex-col h-[100vh] z-10" id="main-container">
         <!-- <h1 class="text-xl">Welcome to Cell!</h1>
         <p class="text-base">This is a simple IDE.</p> -->
@@ -19,22 +29,32 @@
                 <img src="icons/exstentions.png" alt="extentions" class="Icons">
             </div>
             <aside id="Explorer" class="bg-stone-800 shadow-[3px_5px_10px_3px_rgba(47, 45, 43, 0.7)]  h-[100vh] w-[16.6vw] mr-[0.4vw]">
-
+                <div class="flex items-center">
+                    <h1>
+                        <img src="icons/arrow_down.png" alt="Expand"class="size-[3vh] inline hover:cursor-pointer">Folder naam 
+                    </h1>
+                    <button class="inline" onclick="newFile()">
+                        <img src="icons/new_file.png" class="w-[1vw] h-[3vh]" alt="new File">
+                    </button>
+                    <button>
+                        <img src="icons/new_folder.png" alt="new folder" class="size-[3vh]">
+                    </button>
+                    <button>
+                        <img src="icons/refresh.png" alt="refresh" class="size-[2vh]">
+                    </button>
+                </div>
+                
+                <ul id="File-List">
+                    <li class="text-sm">PlaceHolder.txt</li>
+                    <li class="text-sm"><img src="" alt="folder"></li>
+                </ul>
             </aside>
             <textarea id="editor" class="text-white border-none outline-none resize-none w-[80vw] h-full ml-auto bg-gradient-to-r from-stone-500 to-stone-400 bg-opacity-80"cols="150" rows="20"></textarea>
-            <div id="file-info"></div>
+           
         </div>
         
     </div>
 
-    <script>
-        const { ipcRenderer } = require('electron');
-
-        ipcRenderer.on('file-opened', (event, { fileName, fileContent }) => {
-            // document.getElementById('file-info').innerText = `Editing: ${fileName}`;
-            document.getElementById('editor').value = fileContent;
-        });
-    </script>
 </body>
 
 </html>
