@@ -21,9 +21,9 @@ function createWindow() {
 
 
 ipcMain.handle('dialog:openFile', async () => {
-    openFile();
+  openFile();
 });
-async function openFile(){
+async function openFile() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
     filters: [
@@ -41,21 +41,29 @@ async function openFile(){
     win.webContents.send('file-opened', { fileName, fileContent });
   }
 }
-  function newFile(){
-    const file_name = 'new_file.txt';
-    const filepath = path.join(temp,file_name)
+function newFile() {
+  const fileName = 'new_file.txt';
+  const filePath = path.join(temp, fileName)
+  const fileContent = "New file";
+  try {
+    fs.writeFileSync(filePath, fileContent);
+  } catch (err) {
+    console.error(`Error writing file: ${err}`);
+  }
+  // win.webContents.send('file-opened', { fileName, fileContent });
 
-    win = new BrowserWindow({
-      width: 1200,
-      height: 1000,
-      webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false
-      },
-      icon: path.join(__dirname, 'icon.ico'),
-    });
-    win.loadFile(file_name);
-    win.maximize()
+
+  win = new BrowserWindow({
+    width: 1200,
+    height: 1000,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    },
+    icon: path.join(__dirname, 'icon.ico'),
+  });
+  win.loadFile(fileName);
+  win.maximize()
 }
 
 const menuTemplate = [
@@ -76,7 +84,7 @@ const menuTemplate = [
       },
       {
         label: 'New window',
-        click: ()=>{
+        click: () => {
           createWindow()
         }
       },
@@ -85,8 +93,8 @@ const menuTemplate = [
       },
       {
         label: 'new file',
-        click:()=>{
-
+        click: () => {
+          newFile();
         }
       }
       ,
