@@ -13,16 +13,20 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false
     },
-    icon: path.join(__dirname, 'icon.ico'),
+    icon: path.join(__dirname, './icons/', 'icon.ico'),
   });
   win.loadFile('index.html');
   win.maximize()
 }
 
-
 ipcMain.handle('dialog:openFile', async () => {
   openFile();
 });
+
+ipcMain.handle('dialog:openFolder', async () => {
+  openFolder();
+});
+
 async function openFile() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
@@ -36,11 +40,26 @@ async function openFile() {
     const filePath = filePaths[0];
     const fileName = path.basename(filePath); // Get only the file name
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-
     // Send the file name and content to the renderer
     win.webContents.send('file-opened', { fileName, fileContent });
   }
 }
+
+async function openFolder() {
+  const { filePaths, canceled } = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+
+  let folderName;
+
+  if (!canceled && filePaths.length > 0) {
+    const folderName = path.basename(filePaths[0]);
+    const folderFolders = fs.readdirSync(filePaths[0])
+    console.log(`${folderName}\n` + folderFolders)
+  }
+
+}
+
 function newFile() {
   console.log("Swen is een snoepje")
   const fileName = 'new_file.txt';
@@ -64,7 +83,7 @@ const menuTemplate = [
     label: 'File',
     submenu: [
       {
-        label: 'Open...',
+        label: 'Open file',
         click: async (item, focusedWindow) => {
           if (focusedWindow) {
             const { filePath, content } = focusedWindow.webContents.executeJavaScript('ipcRenderer.invoke("dialog:openFile")');
@@ -74,6 +93,14 @@ const menuTemplate = [
           }
         },
 
+      },
+      {
+        label: 'Open folder',
+        click: async (item, focusedWindow) => {
+          if (focusedWindow) {
+            await focusedWindow.webContents.executeJavaScript('ipcRenderer.invoke("dialog:openFolder")');
+          }
+        },
       },
       {
         label: 'New window',
