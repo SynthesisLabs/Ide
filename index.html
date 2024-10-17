@@ -31,7 +31,7 @@
         const { ipcRenderer } = require('electron');
 
         ipcRenderer.on('file-opened', (event, { fileName, fileContent }) => {
-            // document.getElementById('file-info').innerText = `Editing: ${fileName}`;
+            document.getElementById('file-info').innerText = `Editing: ${fileName}`;
             document.getElementById('editor').value = fileContent;
         });
     </script>
